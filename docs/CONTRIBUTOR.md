@@ -1,47 +1,63 @@
 # Contributing Guide
 
-## Branching (GitFlow-light)
-- `main`: production, tagged releases `vX.Y.Z`.
-- `develop`: integration branch.
-- `feature/<id>-<slug>`: new features or refactors.
-- `hotfix/<slug>`: urgent fixes from `main`.
-- `release/<X.Y.Z>`: release prep from `develop`.
+Thanks for considering a contribution! This document explains how we work on this repo,
+the quality gates to pass, and how to get a change merged and released.
 
-## Commit messages (Conventional Commits)
-- `feat:` new feature
-- `fix:` bug fix
-- `docs:` documentation
-- `refactor:` code change without behavior change
-- `test:` tests
-- `chore:` tooling / CI / build
+## TL;DR
+- Branch from `develop` using `feature/<issueId>-<slug>`.
+- Follow **Conventional Commits**.
+- Make sure **Checkstyle**, **tests**, **coverage ≥ 80% (JaCoCo)** and **PIT** pass.
+- Open a PR to `develop` with a clear description and “Closes #<issueId>”.
+- At least **one review** required; **squash merge**.
 
-Example: `feat(board): add left-merge movement`
+---
 
-## Issues → Pull Requests
-1. Open an issue using the proper template (🐛 bug, 🧩 feature, 📝 docs).
-2. Create a branch `feature/<issueId>-<slug>`.
-3. Open a PR to `develop` (or to `main` for hotfix) with:
-   - Clear description + “Closes #<issueId>”
-   - Checklist (tests, docs, screenshots if UI)
-4. **At least 1 review** required; use **squash merge**.
+## 1) Prerequisites
+- Java **17+**
+- Maven **3.8+**
+- GitHub account with access to this repo
 
-## Quality gates (required to merge)
-- **Build & tests:** `mvn -q -DskipTests=false verify`
-- **Checkstyle:** comply with repo rules.
-- **Mutation testing (PIT):** dedicated workflow must pass.
-- **Coverage:** JaCoCo **≥ 80%** (build fails below).
-- Required green workflows: `CI`, `Checkstyle (lint)`, `Mutation Testing (PIT)`.
+---
 
-## Versioning & releases
-- Semantic Versioning `vMAJOR.MINOR.PATCH`.
-- Release = tag + packaged JAR attached (via “Release” workflow).
-- Changelog summarized in the release page (PRs list).
+## 2) Branching model (GitFlow-light)
+- `main` — production, tagged releases `vX.Y.Z`
+- `develop` — integration branch
+- `feature/<issueId>-<short-slug>` — new features/refactors
+- `hotfix/<short-slug>` — urgent fixes from `main`
+- `release/<X.Y.Z>` — release prep from `develop`
 
-## Testing guidelines
-- Unit tests per public class.
-- Descriptive names: `should<DoX>When<Y>()`.
-- Avoid time-sensitive and external IO/network dependencies.
+**Examples**
+- `feature/42-add-undo-action`
+- `hotfix/fix-crash-on-empty-grid`
+- `release/1.1.0`
 
-## Style
-- **Java 17** everywhere (POM & CI).
-- No dead code; avoid `System.out.println` in production—use a logger.
+---
+
+## 3) Commit messages (Conventional Commits)
+Format: `type(scope): short summary`
+
+Common types:
+- `feat:` new feature  
+- `fix:` bug fix  
+- `docs:` documentation changes  
+- `refactor:` code change without behavior change  
+- `test:` tests only  
+- `chore:` tooling/CI/build housekeeping
+
+**Examples**
+- `feat(board): add left-merge movement`
+- `fix(ui): correct "You lose!" message`
+- `test(controller): cover mergeRight edge cases`
+
+Keep commits focused and small.
+
+---
+
+## 4) Issues → Pull Requests
+1. **Open an issue** using the right template (🐛 bug, 🧩 feature, 📝 docs).
+2. **Create a branch** from `develop`: `feature/<issueId>-<slug>`.
+3. **Implement** with tests and documentation updates if needed.
+4. **Run locally**:
+   ```bash
+   mvn -q verify                 # build + tests + JaCoCo report
+   mvn -q org.pitest:pitest-maven:mutationCoverage   # optional local PIT

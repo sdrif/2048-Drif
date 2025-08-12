@@ -7,6 +7,9 @@ on:
 jobs:
   label-and-comment:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
     steps:
       - name: Add label
         uses: actions-ecosystem/action-add-labels@v1
