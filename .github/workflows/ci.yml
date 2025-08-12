@@ -2,56 +2,42 @@ name: CI
 
 on:
   push:
-    branches: [ main, develop ]
-    paths-ignore: [ '**.md', 'docs/**', '.gitignore' ]
+    branches: ["**"]
   pull_request:
-    branches: [ main, develop, 'feature/**', 'release/**' ]
-    types: [ opened, synchronize, reopened ]
+    branches: ["**"]
 
 jobs:
-  test:
-    name: Unit tests + coverage
+  build-test:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
 
-      - name: Set up JDK 11
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '11'
+          java-version: "17"
           cache: maven
 
-      - name: Run tests with JaCoCo
-        run: mvn -B clean test jacoco:report
+      - name: Build & test (with coverage)
+        run: mvn -B -DskipTests=false verify
 
-      - name: Upload test reports (JUnit + JaCoCo)
+      - name: Upload test reports
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: reports
+          name: surefire-reports
           path: |
-            target/surefire-reports/**
-            target/site/jacoco/**
+            **/target/surefire-reports/*
+            **/target/site/jacoco/index.html
 
-  package:
-    name: Build JAR (if tests pass)
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-      - uses: actions/checkout@v4
+      - name: Package
+        run: mvn -B -DskipTests package
 
-      - name: Set up JDK 11
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '11'
-          cache: maven
-
-      - name: Package (skip tests)
-        run: mvn -B package -DskipTests
-
-      - name: Upload app artifact
+      - name: Upload JAR artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app
+          name: app-jar
           path: target/*.jar

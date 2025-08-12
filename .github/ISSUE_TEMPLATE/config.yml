@@ -1,8 +1,5 @@
 blank_issues_enabled: true
 contact_links:
-  - name: 💬 Discussions
-    url: https://github.com/sdrif/2048-Drif/discussions/new/choose
-    about: Ask questions or start a discussion with the community
-  - name: 🐞 Open a blank issue
-    url: https://github.com/sdrif/2048-Drif/issues/new
-    about: Prefer using a template, but a blank issue is available if needed
+  name: Ask a question (Discussions)
+  url: https://github.com/OWNER/REPO/discussions
+  about: General questions, ideas, and help.
