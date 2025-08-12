@@ -1,0 +1,31 @@
+name: Mutation Testing (PIT)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ 'feature/**' ]
+    paths:
+      - 'src/**'
+      - 'pom.xml'
+
+jobs:
+  pitest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: JDK 11
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '11'
+          cache: maven
+
+      - name: Run PIT
+        run: mvn -B -DskipTests=false test org.pitest:pitest-maven:mutationCoverage
+
+      - name: Upload PIT reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: pit-reports
+          path: target/pit-reports/**
