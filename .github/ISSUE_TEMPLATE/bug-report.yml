@@ -1,0 +1,48 @@
+name: "🐞 Bug Report"
+description: "Report a bug or issue with the project."
+title: "[BUG]: "
+labels: 
+  - bug
+  - triage required
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: "Description"
+      description: "Provide a clear and concise description of the bug."
+      placeholder: "Describe the problem you encountered."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: "Steps to Reproduce"
+      description: "List the steps to reproduce the bug."
+      placeholder: "1. Go to...\n2. Click on...\n3. Observe..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: "Expected Result"
+      placeholder: "What should have happened."
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: "Actual Result"
+      placeholder: "What actually happened."
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: "Version"
+      placeholder: "e.g., v1.0.0"
+    validations:
+      required: true
