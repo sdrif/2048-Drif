@@ -11,7 +11,7 @@ jobs:
       - name: Add label
         uses: actions-ecosystem/action-add-labels@v1
         with:
-          labels: needs-triage
+          labels: needs triage
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Comment
@@ -20,6 +20,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.issue.number }}
           body: |
-            👋 Thanks for opening this issue!  
+            👋 Thanks for opening this issue!
             The team will review it soon.  
-            Please make sure you've provided enough detail.
+            Please make sure you've provided enough detail (repro steps, expected/actual results, environment).
