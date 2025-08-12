@@ -1,48 +1,68 @@
-name: "🐞 Bug Report"
-description: "Report a bug or issue with the project."
-title: "[BUG]: "
-labels: 
-  - bug
-  - triage required
+name: "🐛 Bug"
+description: "Something broke or behaves unexpectedly."
+title: "bug: <short summary>"
+labels: [bug, needs triage]
 body:
-  - type: textarea
-    id: description
+  - type: dropdown
+    id: severity
     attributes:
-      label: "Description"
-      description: "Provide a clear and concise description of the bug."
-      placeholder: "Describe the problem you encountered."
-    validations:
-      required: true
+      label: Severity
+      options:
+        - S1 - Critical (crash/data loss)
+        - S2 - Major (feature unusable)
+        - S3 - Minor (workaround exists)
+        - S4 - Cosmetic
+    validations: { required: true }
+
+  - type: textarea
+    id: what_happened
+    attributes:
+      label: What happened?
+      description: "Describe the bug and why it’s a problem."
+      placeholder: "Clear description of the unexpected behavior"
+    validations: { required: true }
 
   - type: textarea
     id: steps
     attributes:
-      label: "Steps to Reproduce"
-      description: "List the steps to reproduce the bug."
-      placeholder: "1. Go to...\n2. Click on...\n3. Observe..."
-    validations:
-      required: true
+      label: Steps to reproduce
+      description: "Numbered steps help a lot."
+      placeholder: "1) …  2) …  3) …"
+    validations: { required: true }
 
   - type: textarea
     id: expected
     attributes:
-      label: "Expected Result"
-      placeholder: "What should have happened."
-    validations:
-      required: true
-
-  - type: textarea
-    id: actual
-    attributes:
-      label: "Actual Result"
-      placeholder: "What actually happened."
-    validations:
-      required: true
+      label: Expected result
+      placeholder: "What you expected to happen"
+    validations: { required: true }
 
   - type: input
-    id: version
+    id: env_version
     attributes:
-      label: "Version"
-      placeholder: "e.g., v1.0.0"
-    validations:
-      required: true
+      label: App version / Git commit
+      placeholder: "e.g. v1.0.2 or 9f8ab12"
+    validations: { required: true }
+
+  - type: checkboxes
+    id: env_os
+    attributes:
+      label: Environment
+      options:
+        - label: Windows
+        - label: macOS
+        - label: Linux
+    validations: { required: false }
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / stacktrace (optional)
+      render: shell
+      placeholder: "Paste the relevant log excerpt"
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots (optional)
+      description: "Paste image URLs or drag & drop in the comment after creating the issue."
