@@ -1,8 +1,8 @@
 <project
   xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
->
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>be.unamur.game2048</groupId>
@@ -16,12 +16,17 @@
 
   <build>
     <plugins>
+      <!-- Compile in Java 11 -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.10.0</version>
+        <configuration>
+          <release>${maven.compiler.release}</release>
+        </configuration>
       </plugin>
 
+      <!-- Mutation tests -->
       <plugin>
         <groupId>org.pitest</groupId>
         <artifactId>pitest-maven</artifactId>
@@ -38,7 +43,58 @@
           </excludedClasses>
         </configuration>
       </plugin>
+
+      <!-- JaCoCo Cover -->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.10</version>
+        <executions>
+          <execution>
+            <id>prepare-agent</id>
+            <goals><goal>prepare-agent</goal></goals>
+          </execution>
+          <execution>
+            <id>report</id>
+            <phase>test</phase>
+            <goals><goal>report</goal></goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Checkstyle -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>3.3.0</version>
+        <configuration>
+          <configLocation>sun_checks.xml</configLocation>
+          <failOnViolation>false</failOnViolation>
+          <logViolationsToConsole>true</logViolationsToConsole>
+        </configuration>
+        <executions>
+          <execution>
+            <id>validate-style</id>
+            <phase>validate</phase>
+            <goals><goal>check</goal></goals>
+            <configuration>
+              <failOnViolation>false</failOnViolation>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
+
+    <!-- version plugin maven-checkstyle -->
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>3.3.0</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 
   <dependencies>
@@ -49,4 +105,14 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>3.3.0</version>
+      </plugin>
+    </plugins>
+  </reporting>
 </project>
