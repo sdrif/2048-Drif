@@ -10,26 +10,24 @@
   <version>1.0-SNAPSHOT</version>
   <name>2048</name>
   <description>2048 game (Java/Swing) with CI, Checkstyle, JaCoCo and PIT</description>
-  <url>https://example.com/2048</url>
 
   <properties>
-    <!-- Java version & encoding -->
+    <!-- Java & build -->
     <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>${maven.compiler.release}</maven.compiler.source>
-    <maven.compiler.target>${maven.compiler.release}</maven.compiler.target>
 
-    <!-- Test / reporting versions -->
+    <!-- Versions -->
     <junit.version>4.13.2</junit.version>
     <surefire.version>3.2.5</surefire.version>
-    <jacoco.version>0.8.11</jacoco.version>
     <checkstyle.plugin.version>3.3.0</checkstyle.plugin.version>
     <compiler.plugin.version>3.11.0</compiler.plugin.version>
+    <jacoco.version>0.8.11</jacoco.version>
     <pitest.version>1.7.4</pitest.version>
+    <jar.plugin.version>3.3.0</jar.plugin.version>
   </properties>
 
   <dependencies>
-    <!-- Keep JUnit 4 to match existing tests -->
+    <!-- JUnit 4 (tests existants) -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -51,20 +49,20 @@
         </configuration>
       </plugin>
 
-      <!-- Run unit tests (JUnit 4) -->
+      <!-- Tests (JUnit 4) -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${surefire.version}</version>
       </plugin>
 
-      <!-- Checkstyle (uses sun_checks.xml at project root) -->
+      <!-- Checkstyle (config par défaut Google) -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>${checkstyle.plugin.version}</version>
         <configuration>
-          <configLocation>sun_checks.xml</configLocation>
+          <configLocation>google_checks.xml</configLocation>
           <failOnViolation>false</failOnViolation>
           <logViolationsToConsole>true</logViolationsToConsole>
         </configuration>
@@ -72,9 +70,7 @@
           <execution>
             <id>validate-style</id>
             <phase>validate</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
+            <goals><goal>check</goal></goals>
             <configuration>
               <failOnViolation>false</failOnViolation>
             </configuration>
@@ -82,7 +78,7 @@
         </executions>
       </plugin>
 
-      <!-- JaCoCo with 80% coverage gate -->
+      <!-- JaCoCo avec seuil 80% -->
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
@@ -90,23 +86,17 @@
         <executions>
           <execution>
             <id>prepare-agent</id>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
+            <goals><goal>prepare-agent</goal></goals>
           </execution>
           <execution>
             <id>report</id>
             <phase>verify</phase>
-            <goals>
-              <goal>report</goal>
-            </goals>
+            <goals><goal>report</goal></goals>
           </execution>
           <execution>
             <id>check</id>
             <phase>verify</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
+            <goals><goal>check</goal></goals>
             <configuration>
               <rules>
                 <rule>
@@ -125,32 +115,55 @@
         </executions>
       </plugin>
 
-      <!-- PIT mutation testing -->
+      <!-- PIT mutation testing (patterns couvrant les sous-packages) -->
       <plugin>
         <groupId>org.pitest</groupId>
         <artifactId>pitest-maven</artifactId>
         <version>${pitest.version}</version>
         <configuration>
-          <!-- Target app classes & tests -->
+          <!-- Inclure le package racine et sous-packages -->
           <targetClasses>
             <param>be.unamur.game2048.*</param>
+            <param>be.unamur.game2048.*.*</param>
+            <param>be.unamur.game2048.*.*.*</param>
           </targetClasses>
-          <targetTests>
-            <param>be.unamur.game2048.*</param>
-          </targetTests>
 
-          <!-- Reports -->
-          <outputFormats>
-            <value>HTML</value>
-            <value>XML</value>
-          </outputFormats>
-
-          <!-- Exclude UI/bootstrap classes from PIT -->
+          <!-- Exclure l'UI/bootstrapping -->
           <excludedClasses>
             <param>be.unamur.game2048.Game</param>
             <param>be.unamur.game2048.views.*</param>
             <param>be.unamur.game2048.helpers.*</param>
           </excludedClasses>
+
+          <!-- Tests -->
+          <targetTests>
+            <param>be.unamur.game2048.*</param>
+          </targetTests>
+
+          <!-- Rapports -->
+          <outputFormats>
+            <param>HTML</param>
+            <param>XML</param>
+          </outputFormats>
+
+          <!-- Optionnel: décommente pendant le debug
+          <failWhenNoMutations>false</failWhenNoMutations>
+          -->
+        </configuration>
+      </plugin>
+
+      <!-- JAR exécutable -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>${jar.plugin.version}</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+              <mainClass>be.unamur.game2048.Game</mainClass>
+            </manifest>
+          </archive>
         </configuration>
       </plugin>
 
